@@ -1,0 +1,2 @@
+<h2 class="text-center mb-5">Qui sommes nous ?</h2>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam, maxime vel. Natus repellendus deserunt non assumenda, nemo nostrum vitae dolorum rem, laborum sit culpa eligendi esse officiis. Adipisci provident, fugiat delectus, quia praesentium animi aliquam dolores accusantium eos quam laborum?</p>

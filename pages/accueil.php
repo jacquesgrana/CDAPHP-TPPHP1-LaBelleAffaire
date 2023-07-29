@@ -1,0 +1,2 @@
+<h2 class="text-center mb-5">Accueil</h2>
+<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga id ex minus sint accusamus dicta ipsam quidem adipisci. Numquam dolorum aliquam ipsam perspiciatis recusandae porro ut fuga corporis explicabo veritatis voluptate, blanditiis voluptas quidem hic odit reiciendis atque, dolore quaerat quasi magnam quae? Sit, soluta eligendi dignissimos velit ipsam unde?</p>
