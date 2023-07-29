@@ -39,7 +39,7 @@ function run()
 
     if (isset($_SESSION['action_type'])) {
         if($_SESSION['action_type'] === 'delete') {
-            echo "membres.php 42 : delete user";
+            //echo "membres.php 42 : delete user";
             //unset($_SESSION['action_type']);
         }
         elseif($_SESSION['action_type'] === 'edit') {
@@ -47,7 +47,7 @@ function run()
             if(isset($_SESSION['user_datas'])) {
                 $string = $_SESSION['user_datas'];
                 $user = explode(",", $string);
-                renderUser($user);
+                updateUser($user);
                 //unset($_SESSION['user']);
             }
             //unset($_SESSION['action_type']);
@@ -136,7 +136,7 @@ function renderUserList($users)
     echo "</table>";
 }
 
-function renderUser($user) {
+function updateUser($user) {
     echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
     //var_dump($user);
     echo "\n" . "<form class='d-flex flex-column align-items-center gap-3' method='post' action=''>";
@@ -152,6 +152,8 @@ function renderUser($user) {
     echo "\n" . "<label class='' for='email'>Email</label>";
     echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
     echo "\n" . "</div>";
+    echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
+    echo "\n" . "<input type='hidden' name='action' value='update'>";
     echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' >Mettre à jour</button>";
     echo "\n" . "</form>";
 }
