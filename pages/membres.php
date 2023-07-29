@@ -11,15 +11,18 @@ run();
 
 function run()
 {
+    
     $isLogged = false;
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         $isLogged = true;
     } else {
         $isLogged = false;
     }
+
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
+            $_SESSION['show_add_form'] = false;
             header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
             //header('Location : .');    
         } else {
@@ -36,22 +39,40 @@ function run()
                 $user[2] = $_POST["email"];
                 $user[3] = "";
                 $user[4] = $_POST["id"];
-                updateUserInCsv($user);
-                //$_SESSION['show_update_form'] = false;
-                echo "'show_update_form' : " . $_SESSION['show_update_form'];
+                updateUser($user);
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                //echo "user updaté";
+            }
+            elseif($_POST["action"] === "add" && $_GET["action"] === "add") {
+                $user = [];
+                $user[0] = $_POST["firstname"];
+                $user[1] = $_POST["lastname"];
+                $user[2] = $_POST["email"];
+                $user[3] = $_POST["password"];
+                addUser($user);
+                $_SESSION['show_add_form'] = false;
+                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
             }
         }
     }
 
+   //ajouter clic bouton ajouter
+    
 
 
     if ($isLogged) {
         $users = readCsv();
         renderUserList($users);
+        renderAddUserButton();
+        //if($_SESSION['show_add_form'] === false) renderAddUserButton();
     } else {
         displayLoginForm();
+    }
+
+    if(isset($_GET["action"])) {
+        if($_GET["action"] = "new-user") {
+            $_SESSION['show_add_form'] = true;
+            editAddUser();
+        }
     }
 
     if (isset($_SESSION['action_type'])) {
@@ -66,7 +87,7 @@ function run()
                 $user = explode(",", $string);
                 //$_SESSION['show_update_form'] = true;
                 $_SESSION['action_type'] = "";
-                updateUser($user);
+                editUpdateUser($user);
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 //unset($_SESSION['user']);
             }
@@ -135,10 +156,6 @@ function renderUserList($users)
         echo "\n" . "<td>" . $user["firstname"] . "</td>";
         echo "\n" . "<td>" . $user["lastname"] . "</td>";
         echo "\n" . "<td>" . $user["email"] . "</td>";
-        /*
-        echo "\n" . "<td class='d-flex gap-3'><form action='index.php?page=membres&action=edit&id=". $cpt ."' method='get'><input class='btn btn-success btn-sm' type='submit' value='Editer'></form>"; //'index.php?page=membres&action=delete&id=". $cpt ."'
-        echo "\n" . "<form action='index.php?page=membres' method='get'><input class='btn btn-warning btn-sm' type='submit' value='Supprimer'></form></td>";
-        */
         echo "\n" . "<td class='d-flex gap-3'>";
         echo "\n" . "<form class='d-flex gap-2' method='get'>";
         echo "\n" . "<input type='hidden' name='page' value='membres'>";
@@ -154,14 +171,20 @@ function renderUserList($users)
     echo "</table>";
 }
 
-function updateUser($user)
+function renderAddUserButton() {
+    echo "\n" . "<form class='d-flex justify-content-center' method='get'>";
+    echo "\n" . "<input type='hidden' name='page' value='membres'>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' name='action' value='add' formaction='index.php?action=new-user'>Ajouter un Utilisateur</button>";
+    echo "\n" . "</form>";
+}
+
+function editUpdateUser($user)
 {
     //echo "'show_update_form' : " . $_SESSION['show_update_form'];
     //if($_SESSION['show_update_form']) {
         echo "\n" . "<div id='div-edit-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
-        echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >"; //onsubmit='submitAndResetDiv(event)'
-        //echo "\n" . "<form onsubmit='return submitAndResetDiv()' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post'>";
+        echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >";
         echo "\n" . "<div>";
         echo "\n" . "<label class='' for='firstname'>Prénom</label>";
         echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
@@ -177,11 +200,38 @@ function updateUser($user)
         echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
         echo "\n" . "<input type='hidden' name='action' value='update'>";
         echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Mettre à jour</button>"; 
-        // type='submit' onclick='submitAndResetDiv(event)
         echo "\n" . "</form>";
         echo "\n" . "</div>";
     //}     
     
+}
+
+function editAddUser() {
+    if($_SESSION["show_add_form"]) {
+        echo "\n" . "<div id='div-add-user'>";
+        echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
+        echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='firstname'>Prénom</label>";
+        echo "\n" . "<input type='text' name='firstname' id='firstname' value=''>";
+        echo "\n" . "</div>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='lastname'>Nom</label>";
+        echo "\n" . "<input type='text' name='lastname' id='lastname' value=''>";
+        echo "\n" . "</div>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='email'>Email</label>";
+        echo "\n" . "<input type='text' name='email' id='email' value=''>";
+        echo "\n" . "</div>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='password'>Mot de passe</label>";
+        echo "\n" . "<input type='password' name='password' id='password' value=''>";
+        echo "\n" . "</div>";
+        echo "\n" . "<input type='hidden' name='action' value='add'>";
+        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>"; 
+        echo "\n" . "</form>";
+        echo "\n" . "</div>";
+    }
 }
 
 ?>

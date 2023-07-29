@@ -65,12 +65,21 @@ function saveUsers($users)
     }
 }
 
-function updateUserInCsv($user) {
+function updateUser($user) {
     // charger tous les user
     $id = $user[4];
     $users = getUsers();
     $users[$id][0] = $user[0];
     $users[$id][1] = $user[1];
     $users[$id][2] = $user[2];
+    saveUsers($users);
+}
+
+function addUser($user) {
+    $pwd = $user[3];
+    $hash = password_hash($pwd, PASSWORD_DEFAULT);
+    $user[3] = $hash;
+    $users = getUsers();
+    array_push($users, $user);
     saveUsers($users);
 }
