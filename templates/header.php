@@ -3,8 +3,8 @@
   <?php
 if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   //echo "\n" . "<button class='brn btn-warning' onclick=''>Déconnexion</button>";
-  echo "\n" . "<form class='mb-3 w-100 d-flex justify-content-end' action='index.php?page=accueil&action=logout' method='post'>";
-  echo "\n" . "<input class='btn btn-warning btn-sm me-5' type='submit' value='Se déconnecter'>";
+  echo "\n" . "<form class='mt-4 me-5 w-100 d-flex position-fixed justify-content-end' action='index.php?page=accueil&action=logout' method='post'>";
+  echo "\n" . "<input class='btn btn-warning position-fixed' type='submit' value='Se déconnecter'>";
   echo "\n" . "</form>";
 }
   ?>

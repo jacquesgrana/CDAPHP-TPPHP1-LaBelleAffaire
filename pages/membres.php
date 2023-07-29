@@ -1,6 +1,7 @@
 <?php
 session_start(); //***************************************************** */
 require_once(dirname(__FILE__) . '/../core/security.php');
+require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 ?>
 
 <h2 class="text-center mb-5">Membres</h2>
@@ -11,56 +12,73 @@ run();
 function run()
 {
     $isLogged = false;
+    if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
+        $isLogged = true;
+    } else {
+        $isLogged = false;
+    }
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
             header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
             //header('Location : .');    
-        } 
-        else {
+        } else {
             header('Location : .');
         }
     }
-          
-    
-    if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
-        $isLogged = true;
-    } 
-    else {
-        $isLogged = false;
+
+    if (isset($_POST["action"]) && isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_GET["action"])) {
+        if ($isLogged) {
+            if ($_POST["action"] === "update" && $_GET["action"] === "update") {
+                $user = [];
+                $user[0] = $_POST["firstname"];
+                $user[1] = $_POST["lastname"];
+                $user[2] = $_POST["email"];
+                $user[3] = "";
+                $user[4] = $_POST["id"];
+                updateUserInCsv($user);
+                //$_SESSION['show_update_form'] = false;
+                echo "'show_update_form' : " . $_SESSION['show_update_form'];
+                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                //echo "user updaté";
+            }
+        }
     }
+
+
+
     if ($isLogged) {
         $users = readCsv();
         renderUserList($users);
-    } 
-    else {
+    } else {
         displayLoginForm();
     }
 
     if (isset($_SESSION['action_type'])) {
-        if($_SESSION['action_type'] === 'delete') {
+        if ($_SESSION['action_type'] === 'delete') {
             //echo "membres.php 42 : delete user";
             //unset($_SESSION['action_type']);
-        }
-        elseif($_SESSION['action_type'] === 'edit') {
-            
-            if(isset($_SESSION['user_datas'])) {
+            $_SESSION['action_type'] = "";
+        } elseif ($_SESSION['action_type'] === 'edit') {
+
+            if (isset($_SESSION['user_datas'])) {
                 $string = $_SESSION['user_datas'];
                 $user = explode(",", $string);
+                //$_SESSION['show_update_form'] = true;
+                $_SESSION['action_type'] = "";
                 updateUser($user);
+                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 //unset($_SESSION['user']);
             }
             //unset($_SESSION['action_type']);
         }
-        
-
     }
 
     if (isset($_SESSION['edit_message'])) {
         echo "<p>" . $_SESSION['edit_message'] . "</p>";
         //unset($_SESSION['edit_message']);
     }
-    
+
     if (isset($_SESSION['delete_message'])) {
         echo "<p>" . $_SESSION['delete_message'] . "</p>";
         //unset($_SESSION['delete_message']);
@@ -136,26 +154,34 @@ function renderUserList($users)
     echo "</table>";
 }
 
-function updateUser($user) {
-    echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
-    //var_dump($user);
-    echo "\n" . "<form class='d-flex flex-column align-items-center gap-3' method='post' action=''>";
-    echo "\n" . "<div>";
-    echo "\n" . "<label class='' for='firstname'>Prénom</label>";
-    echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
-    echo "\n" . "</div>";
-    echo "\n" . "<div>";
-    echo "\n" . "<label class='' for='lastname'>Nom</label>";
-    echo "\n" . "<input type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
-    echo "\n" . "</div>";
-    echo "\n" . "<div>";
-    echo "\n" . "<label class='' for='email'>Email</label>";
-    echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
-    echo "\n" . "</div>";
-    echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
-    echo "\n" . "<input type='hidden' name='action' value='update'>";
-    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' >Mettre à jour</button>";
-    echo "\n" . "</form>";
+function updateUser($user)
+{
+    //echo "'show_update_form' : " . $_SESSION['show_update_form'];
+    //if($_SESSION['show_update_form']) {
+        echo "\n" . "<div id='div-edit-user'>";
+        echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
+        echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >"; //onsubmit='submitAndResetDiv(event)'
+        //echo "\n" . "<form onsubmit='return submitAndResetDiv()' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post'>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='firstname'>Prénom</label>";
+        echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
+        echo "\n" . "</div>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='lastname'>Nom</label>";
+        echo "\n" . "<input type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
+        echo "\n" . "</div>";
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='email'>Email</label>";
+        echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
+        echo "\n" . "</div>";
+        echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
+        echo "\n" . "<input type='hidden' name='action' value='update'>";
+        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Mettre à jour</button>"; 
+        // type='submit' onclick='submitAndResetDiv(event)
+        echo "\n" . "</form>";
+        echo "\n" . "</div>";
+    //}     
+    
 }
 
 ?>

@@ -20,23 +20,11 @@ function deleteUser($id)
 
 function editUser($id)
 {
-    //$_SESSION['edit_message'] = "edit user : id : " . $id;
-    //$_SESSION['edit_message'] = "edit user : id : " . $id;
-
-    // charger csv dans un tableau avec tout
     $users = getUsers();
-
     $_SESSION['action_type'] = "edit";
     $user = $users[$id];
-    /*
-      $user = array(
-        "firstname" => "John",
-        "lastname" => "Doe",
-        "email" => "john.doe@example.com"
-    );*/
     $string = implode(",", $user);
     $_SESSION['user_datas'] = $string;
-    //return $user;
 }
 
 function getUsers()
@@ -75,4 +63,14 @@ function saveUsers($users)
     } else {
         echo 'Erreur pendant l\'ouverture du fichier<br>';
     }
+}
+
+function updateUserInCsv($user) {
+    // charger tous les user
+    $id = $user[4];
+    $users = getUsers();
+    $users[$id][0] = $user[0];
+    $users[$id][1] = $user[1];
+    $users[$id][2] = $user[2];
+    saveUsers($users);
 }

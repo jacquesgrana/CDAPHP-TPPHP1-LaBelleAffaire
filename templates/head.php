@@ -21,7 +21,14 @@ session_start();
       margin-bottom: 0;
     }
     main {
-      margin-top: 240px !important;
+      margin-top: 220px !important;
     }
   </style>
+  <script defer>
+    function submitAndResetDiv(e) {
+      //e.preventDefault();
+      //document.getElementById("form-update-user").submit();
+      document.getElementById('div-edit-user').style.display = 'none';
+    }
+  </script>
 </head>
