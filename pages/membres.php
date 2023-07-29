@@ -19,6 +19,21 @@ function run()
         $isLogged = false;
     }
 
+    if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
+        if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
+          $id = $_GET["index"];
+          if ($_GET["action"] === "edit" && $_GET["page"] === "membres") {
+            editUser($id);
+            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+            exit();
+          } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
+            deleteUser($id);
+            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+            exit();
+          }
+        }
+      }
+
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
