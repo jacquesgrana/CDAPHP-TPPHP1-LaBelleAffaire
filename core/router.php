@@ -1,6 +1,7 @@
 <?php
+session_start();
 require_once(dirname(__FILE__) . '/../core/security.php');
-//require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
+require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 $page = 'accueil.php';
 
 
@@ -19,14 +20,22 @@ if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
     $id = $_GET["index"];
     if ($_GET["action"] === "edit" && $_GET["page"] === "membres") {
-      echo "edit id : " . $id;
-      $page = 'membres.php';
-    } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
-      echo "delete id : " . $id;
-      // Supprimer l'utilisateur ici en utilisant la fonction deleteUser($id)
-      // deleteUser($id);
+      //$page = 'membres.php';
+      
+      editUser($id);
+      //$string = implode(",", $user);
+      //$_SESSION['user'] = $tring;
       header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-      exit(); // Arrêter le script ici pour empêcher tout routage supplémentaire
+      exit();
+    } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
+      
+      //$page = 'membres.php';
+      
+      deleteUser($id);
+      //$string = implode(",", $user);
+      //$_SESSION['user'] = $tring;
+      header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+      exit();
     }
   }
 }

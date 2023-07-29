@@ -1,5 +1,5 @@
 <?php
-//session_start();
+session_start(); //***************************************************** */
 require_once(dirname(__FILE__) . '/../core/security.php');
 ?>
 
@@ -35,6 +35,35 @@ function run()
     } 
     else {
         displayLoginForm();
+    }
+
+    if (isset($_SESSION['action_type'])) {
+        if($_SESSION['action_type'] === 'delete') {
+            echo "membres.php 42 : delete user";
+            //unset($_SESSION['action_type']);
+        }
+        elseif($_SESSION['action_type'] === 'edit') {
+            
+            if(isset($_SESSION['user_datas'])) {
+                $string = $_SESSION['user_datas'];
+                $user = explode(",", $string);
+                renderUser($user);
+                //unset($_SESSION['user']);
+            }
+            //unset($_SESSION['action_type']);
+        }
+        
+
+    }
+
+    if (isset($_SESSION['edit_message'])) {
+        echo "<p>" . $_SESSION['edit_message'] . "</p>";
+        //unset($_SESSION['edit_message']);
+    }
+    
+    if (isset($_SESSION['delete_message'])) {
+        echo "<p>" . $_SESSION['delete_message'] . "</p>";
+        //unset($_SESSION['delete_message']);
     }
 }
 
@@ -93,11 +122,11 @@ function renderUserList($users)
         echo "\n" . "<form action='index.php?page=membres' method='get'><input class='btn btn-warning btn-sm' type='submit' value='Supprimer'></form></td>";
         */
         echo "\n" . "<td class='d-flex gap-3'>";
-        echo "\n" . "<form class='' method='get'>";
+        echo "\n" . "<form class='d-flex gap-2' method='get'>";
         echo "\n" . "<input type='hidden' name='page' value='membres'>";
         echo "\n" . "<input type='hidden' name='index' value='" . $index . "'>";
         echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='edit' formaction='index.php?page=membres&action=edit'>Editer</button>";
-        echo "\n" . "<button class='btn btn-warning btn-sm' type='submit' name='action' value='delete' formaction='index.php?page=membres&action=delete'>Supprimer</button>";
+        echo "\n" . "<button class='btn btn-danger btn-sm' type='submit' name='action' value='delete' formaction='index.php?page=membres&action=delete'>Supprimer</button>";
         echo "\n" . "</form>";
         echo "\n" . "</td>";
         echo "\n" . "</tr>";
@@ -105,6 +134,26 @@ function renderUserList($users)
     }
 
     echo "</table>";
+}
+
+function renderUser($user) {
+    echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
+    //var_dump($user);
+    echo "\n" . "<form class='d-flex flex-column align-items-center gap-3' method='post' action=''>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='firstname'>Prénom</label>";
+    echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='lastname'>Nom</label>";
+    echo "\n" . "<input type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='email'>Email</label>";
+    echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' >Mettre à jour</button>";
+    echo "\n" . "</form>";
 }
 
 ?>
