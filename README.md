@@ -10,4 +10,4 @@
 
 - email : 'adeloin@hotmail.com'
 
-- mot de passe : 'admin'
+- mot de passe : 'adeloin'
