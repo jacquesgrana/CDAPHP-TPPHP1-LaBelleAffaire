@@ -2,18 +2,12 @@
 session_start();
 require_once(dirname(__FILE__) . '/../core/security.php');
 require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
-?>
 
-<h2 class="text-center mb-5">Membres</h2>
+run();
 
-<?php
-$users = [];
-run($users);
-
-// TODO ajouter affichage du nom et prenom de l'utilisateur loggé
-function run($users)
+function run()
 {
-
+    echo '<h2 class="text-center mb-3">Membres</h2>';
     $isLogged = false;
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         $isLogged = true;
@@ -26,13 +20,11 @@ function run($users)
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
             $_SESSION['show_add_form'] = false;
             header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
-            //header('Location : .');    
         } else {
             header('Location : .');
         }
     }
 
-    // TODO : faire gestion des requetes de tris
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
             $id = $_GET["index"];
@@ -133,7 +125,7 @@ function renderLoginForm()
     echo "\n" . "<input class='' type='password' name='password' id='password'>";
     echo "\n" . "<input type='hidden' name='connexion' value='connect'>";
     echo "\n" . "</div>";
-    echo "\n" . "<input class='btn btn-success btn-sm' type='submit' value='Envoyer'>";
+    echo "\n" . "<input class='btn btn-success btn-sm' type='submit' value='✔ Envoyer'>";
     echo "\n" . "</form>";
 }
 
@@ -205,6 +197,7 @@ function renderUpdateUser($user)
 
 function renderAddUser()
 {
+    /*
     echo "\n" . "<div id='div-add-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
         echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
@@ -228,8 +221,8 @@ function renderAddUser()
         echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>";
         echo "\n" . "</form>";
         echo "\n" . "</div>";
-        $_SESSION['show_add_form'] = false;
-    /*
+        $_SESSION['show_add_form'] = false;*/
+    
     if ($_SESSION['show_add_form']) {
         echo "\n" . "<div id='div-add-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
@@ -257,7 +250,7 @@ function renderAddUser()
         $_SESSION['show_add_form'] = false;
     } else {
         renderAddUserButton();
-    }*/
+    }
 }
 
 ?>
