@@ -27,6 +27,9 @@ function connect()
     }
 }
 
+/**
+ * Fonction (ajoutée) qui met dans des variables de session les infos de l'user qui vient de se logger.
+ */
 function set_user_session_infos($email) {
     $users = getUsersToFilter();
     foreach ($users as $u) {
@@ -39,6 +42,10 @@ function set_user_session_infos($email) {
     $_SESSION['user_email'] = $email;
 }
 
+/**
+ * Fonction (ajoutée) qui charge les user depuis le fichier .csv et renvoit un tableau 
+ * avec le firstname, lastname et email.
+ */
 function getUsersToFilter()
 {
     $users = [];

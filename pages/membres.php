@@ -5,6 +5,9 @@ require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 
 run();
 
+/**
+ * Fonction principale, gère les requêtes du client.
+ */
 function run()
 {
     echo '<h2 class="text-center mb-3">Membres</h2>';
@@ -106,12 +109,18 @@ function run()
     }
 }
 
+/**
+ * Fonction qui affiche les infos du l'user loggé.
+ */
 function renderUserInfos() {
     if(isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname']) && isset($_SESSION['user_email'])) {
         echo "\n" . "<h6 class='text-center mb-3'><span class='text-success'>" . $_SESSION['user_firstname'] . "</span> • <span class='text-success'>" . $_SESSION['user_lastname'] . "</span> • <span class='text-success'>" . $_SESSION['user_email'] . "</span></h6>";
     }
 }
 
+/**
+ * Fonction qui affiche le formulaire de login.
+ */
 function renderLoginForm()
 {
     echo "\n" . "<h3 class='h5 text-center mb-3'>Veuillez vous connecter</h3>";
@@ -129,9 +138,12 @@ function renderLoginForm()
     echo "\n" . "</form>";
 }
 
+/**
+ * Fonction qui affiche les users du tableau.
+ * @param $users [[]] : tableau d'user à afficher.
+ */
 function renderUserList($users)
 {
-    //$cpt = 0;
     echo "<table class='table'>";
     echo "\n" . "<tr>";
     echo "\n" . "<th><a href='index.php?page=membres&action=sort&cat=firstname' class='link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover'>Prénom</a></th>";
@@ -139,7 +151,6 @@ function renderUserList($users)
     echo "\n" . "<th><a href='index.php?page=membres&action=sort&cat=email' class='link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover'>Email</a></th>";
     echo "\n" . "<th>Actions</th>";
     echo "\n" . "</tr>";
-
     foreach ($users as $index => $user) {
         echo "\n" . "<tr>";
         echo "\n" . "<td>" . $user["firstname"] . "</td>";
@@ -155,10 +166,12 @@ function renderUserList($users)
         echo "\n" . "</td>";
         echo "\n" . "</tr>";
     }
-
     echo "</table>";
 }
 
+/**
+ * Fonction qui affiche le bouton d'ajout d'user.
+ */
 function renderAddUserButton()
 {
     echo "\n" . "<form class='d-flex justify-content-center' method='get'>";
@@ -167,10 +180,12 @@ function renderAddUserButton()
     echo "\n" . "</form>";
 }
 
+/**
+ * Fonction qui affiche le formulaire de modification de $user passé en paramètre.
+ * @param $user [] : user à mettre à jour.
+ */
 function renderUpdateUser($user)
 {
-    //echo "'show_update_form' : " . $_SESSION['show_update_form'];
-    //if($_SESSION['show_update_form']) {
     echo "\n" . "<div id='div-edit-user'>";
     echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
     echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >";
@@ -191,38 +206,13 @@ function renderUpdateUser($user)
     echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>✔ Mettre à jour</button>";
     echo "\n" . "</form>";
     echo "\n" . "</div>";
-    //}     
-
 }
 
+/**
+ * Fonction qui affiche le formulaire d'ajout d'un user.
+ */
 function renderAddUser()
 {
-    /*
-    echo "\n" . "<div id='div-add-user'>";
-        echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
-        echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
-        echo "\n" . "<div>";
-        echo "\n" . "<label class='' for='firstname'>Prénom</label>";
-        echo "\n" . "<input type='text' name='firstname' id='firstname' value=''>";
-        echo "\n" . "</div>";
-        echo "\n" . "<div>";
-        echo "\n" . "<label class='' for='lastname'>Nom</label>";
-        echo "\n" . "<input type='text' name='lastname' id='lastname' value=''>";
-        echo "\n" . "</div>";
-        echo "\n" . "<div>";
-        echo "\n" . "<label class='' for='email'>Email</label>";
-        echo "\n" . "<input type='text' name='email' id='email' value=''>";
-        echo "\n" . "</div>";
-        echo "\n" . "<div>";
-        echo "\n" . "<label class='' for='password'>Mot de passe</label>";
-        echo "\n" . "<input type='password' name='password' id='password' value=''>";
-        echo "\n" . "</div>";
-        echo "\n" . "<input type='hidden' name='action' value='add'>";
-        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>";
-        echo "\n" . "</form>";
-        echo "\n" . "</div>";
-        $_SESSION['show_add_form'] = false;*/
-    
     if ($_SESSION['show_add_form']) {
         echo "\n" . "<div id='div-add-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";

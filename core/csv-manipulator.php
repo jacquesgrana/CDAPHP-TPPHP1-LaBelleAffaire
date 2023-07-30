@@ -1,6 +1,15 @@
 <?php
 session_start();
+/**
+ * Librairie dédiée à la manipulation du fichier .csv de données.
+ */
 
+
+ /**
+  * Fonction qui supprime un user du fichier .csv selon son id et renvoit user et action_type 
+  * dans les variables de session $_SESSION['user_datas'] et $_SESSION['action_type'].
+  * @param $id {int} : id de l'user à supprimer
+  */
 function deleteUser($id)
 {
     // charger csv dans un tableau avec tout
@@ -18,6 +27,11 @@ function deleteUser($id)
     //return $user;
 }
 
+/**
+ *  Fonction qui cherche un user du fichier .csv selon son id et renvoit user et action_type 
+  * dans les variables de session $_SESSION['user_datas'] et $_SESSION['action_type']. 
+ * @param $id {int} : id de l'user à renvoyer
+ */
 function editUser($id)
 {
     $users = getUsers();
@@ -27,6 +41,11 @@ function editUser($id)
     $_SESSION['user_datas'] = $string;
 }
 
+/**
+ * Fonction qui renvoit le tableau des user depuis le fichier .csv.
+ * chaque user est un tableau à indice et l'index de l'user est ajouté.
+ * @returns $users [[]]
+ */
 function getUsers()
 {
     if ($fp = fopen(dirname(__FILE__) . '/../src/datas/users.csv', 'r')) {
@@ -43,6 +62,11 @@ function getUsers()
     }
 }
 
+/**
+ * Fonction qui renvoit le tableau des user depuis le fichier .csv pour l'affichage.
+ * chaque user est un tableau associatif.
+ * @return $users [[]]
+ */
 function getUsersToRender()
 {
     $users = [];
@@ -60,6 +84,10 @@ function getUsersToRender()
     return $users;
 }
 
+/**
+ * Fonction qui sauvegarde le tableau $users dans le fichier .csv.
+ * @param $users {[[]]} : tableau d'user à sauvegarder.
+ */
 function saveUsers($users)
 {
     $newUsers = [];
@@ -82,6 +110,10 @@ function saveUsers($users)
     }
 }
 
+/**
+ * Fonction qui met à jour dans le fichier .csv l'user passé en paramètre selon l'id.
+ * @param $user {[]} : user à mettre à jour.
+ */
 function updateUser($user)
 {
     // charger tous les user
@@ -93,6 +125,10 @@ function updateUser($user)
     saveUsers($users);
 }
 
+/**
+ * Fonction qui ajoute dans le fichier .csv l'user passé en paramètre selon l'id.
+ * @param $user [] : user à ajouter.
+ */
 function addUser($user)
 {
     $pwd = $user[3];
@@ -103,9 +139,12 @@ function addUser($user)
     saveUsers($users);
 }
 
+/**
+ * Fonction qui tri le fichier .csv selon $cat et le sauvegarde.
+ * @param $cat string : critère de tri.
+ */
 function sortUsers($cat)
 {
-    //return getUsersToRender();
     $users = getUsers();
     switch ($cat) {
         case "firstname":
@@ -123,12 +162,23 @@ function sortUsers($cat)
     }
 }
 
+/**
+ * Comparator sur le firstname.
+ */
 function compareFirstName($userA, $userB) {
     return strcmp($userA[0], $userB[0]);
 }
+
+/**
+ * Comparator sur le lastname.
+ */
 function compareLastName($userA, $userB) {
     return strcmp($userA[1], $userB[1]);
 }
+
+/**
+ * Comparator sur l'email'.
+ */
 function compareEmail($userA, $userB) {
     return strcmp($userA[2], $userB[2]);
 }
