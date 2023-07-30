@@ -22,6 +22,7 @@ session_start();
     }
     main {
       margin-top: 220px !important;
+      margin-bottom: 160px;
     }
   </style>
   <script defer>

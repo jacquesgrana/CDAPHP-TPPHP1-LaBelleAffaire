@@ -77,8 +77,9 @@ function run()
     if ($isLogged) {
         $users = readCsv();
         renderUserList($users);
-        renderAddUserButton();
-        //if($_SESSION['show_add_form'] === false) renderAddUserButton();
+        //renderAddUserButton();
+        //echo 'show_add_form' . $_SESSION['show_add_form'];
+        if(!$_SESSION['show_add_form']) renderAddUserButton();
     } else {
         displayLoginForm();
     }
@@ -87,6 +88,7 @@ function run()
         if($_GET["action"] = "new-user") {
             $_SESSION['show_add_form'] = true;
             editAddUser();
+            //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
         }
     }
 
@@ -222,7 +224,7 @@ function editUpdateUser($user)
 }
 
 function editAddUser() {
-    if($_SESSION["show_add_form"]) {
+    if($_SESSION['show_add_form']) {
         echo "\n" . "<div id='div-add-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
         echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
@@ -246,6 +248,12 @@ function editAddUser() {
         echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>"; 
         echo "\n" . "</form>";
         echo "\n" . "</div>";
+        
+        $_SESSION['show_add_form'] = false;
+        
+    }
+    else {
+        renderAddUserButton();
     }
 }
 
