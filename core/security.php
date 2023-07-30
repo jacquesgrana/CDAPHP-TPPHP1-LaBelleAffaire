@@ -14,6 +14,8 @@ function connect()
         if (isset($_POST['email']) && isset($_POST['password'])) {
             if (search_user($_POST['email'], $_POST['password']) === true) {
                 session_start();
+                
+                set_user_session_infos($_POST['email']);
                 $_SESSION['user'] = true;
                 //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
             }
@@ -23,6 +25,35 @@ function connect()
     } else {
         session_destroy();
     }
+}
+
+function set_user_session_infos($email) {
+    $users = getUsersToFilter();
+    foreach ($users as $u) {
+        if ($u["email"] === $email) {
+             $user = $u;
+        }
+    }
+    $_SESSION['user_firstname'] = $user["firstname"];
+    $_SESSION['user_lastname'] = $user["lastname"];
+    $_SESSION['user_email'] = $email;
+}
+
+function getUsersToFilter()
+{
+    $users = [];
+    $file_path = "./src/datas/users.csv";
+    if (file_exists($file_path)) {
+        $file_pointer = fopen($file_path, "r");
+        while ($data = fgetcsv($file_pointer, null, ",")) {
+            $users[] = [
+                "firstname" => $data[0],
+                "lastname" => $data[1],
+                "email" => $data[2]
+            ];
+        }
+    }
+    return $users;
 }
 
 /**

@@ -43,10 +43,27 @@ function getUsers()
     }
 }
 
+function getUsersToRender()
+{
+    $users = [];
+    $file_path = "./src/datas/users.csv";
+    if (file_exists($file_path)) {
+        $file_pointer = fopen($file_path, "r");
+        while ($data = fgetcsv($file_pointer, null, ",")) {
+            $users[] = [
+                "firstname" => $data[0],
+                "lastname" => $data[1],
+                "email" => $data[2]
+            ];
+        }
+    }
+    return $users;
+}
+
 function saveUsers($users)
 {
     $newUsers = [];
-    foreach($users as $user) {
+    foreach ($users as $user) {
         $newUser = [];
         $newUser[0] = $user[0];
         $newUser[1] = $user[1];
@@ -65,7 +82,8 @@ function saveUsers($users)
     }
 }
 
-function updateUser($user) {
+function updateUser($user)
+{
     // charger tous les user
     $id = $user[4];
     $users = getUsers();
@@ -75,11 +93,42 @@ function updateUser($user) {
     saveUsers($users);
 }
 
-function addUser($user) {
+function addUser($user)
+{
     $pwd = $user[3];
     $hash = password_hash($pwd, PASSWORD_DEFAULT);
     $user[3] = $hash;
     $users = getUsers();
     array_push($users, $user);
     saveUsers($users);
+}
+
+function sortUsers($cat)
+{
+    //return getUsersToRender();
+    $users = getUsers();
+    switch ($cat) {
+        case "firstname":
+            usort($users, "compareFirstName");
+            saveUsers($users);
+            break;
+        case "lastname":
+            usort($users, "compareLastName");
+            saveUsers($users);
+            break;
+        case "email":
+            usort($users, "compareEmail");
+            saveUsers($users);
+            break;
+    }
+}
+
+function compareFirstName($userA, $userB) {
+    return strcmp($userA[0], $userB[0]);
+}
+function compareLastName($userA, $userB) {
+    return strcmp($userA[1], $userB[1]);
+}
+function compareEmail($userA, $userB) {
+    return strcmp($userA[2], $userB[2]);
 }

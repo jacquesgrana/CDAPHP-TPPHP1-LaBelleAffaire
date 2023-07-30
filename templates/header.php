@@ -1,11 +1,19 @@
 <header class="bg-success w-100 m-0 fixed-top d-flex flex-column justify-content-center align-items-center">
   <h1 class="mt-5 mx-5 mb-3 text-center">Association La belle affaire</h1>
   <?php
+  session_start();
 if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
+  renderUser();
   //echo "\n" . "<button class='brn btn-warning' onclick=''>Déconnexion</button>";
   echo "\n" . "<form class='mt-4 me-5 w-100 d-flex position-fixed justify-content-end' action='index.php?page=accueil&action=logout' method='post'>";
   echo "\n" . "<input class='btn btn-warning position-fixed' type='submit' value='Se déconnecter'>";
   echo "\n" . "</form>";
+}
+
+function renderUser() {
+  if(isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname']) && isset($_SESSION['user_email'])) {
+      echo "\n" . "<h6 class='mb-3'><span class='text-warning'>" . $_SESSION['user_firstname'] . "</span> / <span class='text-warning'>" . $_SESSION['user_lastname'] . "</span> / <span class='text-warning'>" . $_SESSION['user_email'] . "</span></h6>";
+  }
 }
   ?>
   <nav>

@@ -1,5 +1,5 @@
 <?php
-session_start(); //***************************************************** */
+session_start();
 require_once(dirname(__FILE__) . '/../core/security.php');
 require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 ?>
@@ -7,32 +7,19 @@ require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 <h2 class="text-center mb-5">Membres</h2>
 
 <?php
-run();
+$users = [];
+run($users);
 
-function run()
+// TODO ajouter affichage du nom et prenom de l'utilisateur loggé
+function run($users)
 {
-    
+
     $isLogged = false;
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         $isLogged = true;
     } else {
         $isLogged = false;
     }
-
-    if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
-        if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
-          $id = $_GET["index"];
-          if ($_GET["action"] === "edit" && $_GET["page"] === "membres") {
-            editUser($id);
-            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-            exit();
-          } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
-            deleteUser($id);
-            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-            exit();
-          }
-        }
-      }
 
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
@@ -45,8 +32,24 @@ function run()
         }
     }
 
-    if (isset($_POST["action"]) && isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_GET["action"])) {
-        if ($isLogged) {
+    // TODO : faire gestion des requetes de tris
+    if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
+        if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
+            $id = $_GET["index"];
+            if ($_GET["action"] === "edit" && $_GET["page"] === "membres") {
+                editUser($id);
+                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                exit();
+            } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
+                deleteUser($id);
+                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                exit();
+            }
+        }
+    }
+
+    if (isset($_POST["action"]) && isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_GET["action"]) && isset($_GET["page"])) {
+        if ($isLogged && $_GET["page"] === "membres") {
             if ($_POST["action"] === "update" && $_GET["action"] === "update") {
                 $user = [];
                 $user[0] = $_POST["firstname"];
@@ -56,8 +59,7 @@ function run()
                 $user[4] = $_POST["id"];
                 updateUser($user);
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-            }
-            elseif($_POST["action"] === "add" && $_GET["action"] === "add") {
+            } elseif ($_POST["action"] === "add" && $_GET["action"] === "add") {
                 $user = [];
                 $user[0] = $_POST["firstname"];
                 $user[1] = $_POST["lastname"];
@@ -70,31 +72,31 @@ function run()
         }
     }
 
-   //ajouter clic bouton ajouter
-    
-
-
     if ($isLogged) {
-        $users = readCsv();
+        if(isset($_SESSION['user_email'])) renderUserInfos();
+        if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["cat"])) {
+            if ($_GET["action"] === "sort" && $_GET["page"] === "membres") {
+                $_SESSION['show_add_form'] = false;
+                sortUsers($_GET["cat"]);
+            }
+        }
+        $users = getUsersToRender();
         renderUserList($users);
-        //renderAddUserButton();
-        //echo 'show_add_form' . $_SESSION['show_add_form'];
-        if(!$_SESSION['show_add_form']) renderAddUserButton();
+        if (!$_SESSION['show_add_form']) renderAddUserButton();
     } else {
-        displayLoginForm();
+        renderLoginForm();
     }
 
-    if(isset($_GET["action"])) {
-        if($_GET["action"] = "new-user") {
+    if (isset($_GET["action"]) && isset($_GET["page"])) {
+        if ($_GET["action"] === "new-user") {
             $_SESSION['show_add_form'] = true;
-            editAddUser();
-            //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+            renderAddUser();
+            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
         }
     }
 
     if (isset($_SESSION['action_type'])) {
         if ($_SESSION['action_type'] === 'delete') {
-            //echo "membres.php 42 : delete user";
             //unset($_SESSION['action_type']);
             $_SESSION['action_type'] = "";
         } elseif ($_SESSION['action_type'] === 'edit') {
@@ -102,28 +104,23 @@ function run()
             if (isset($_SESSION['user_datas'])) {
                 $string = $_SESSION['user_datas'];
                 $user = explode(",", $string);
-                //$_SESSION['show_update_form'] = true;
                 $_SESSION['action_type'] = "";
-                editUpdateUser($user);
+                renderUpdateUser($user);
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 //unset($_SESSION['user']);
             }
             //unset($_SESSION['action_type']);
         }
     }
+}
 
-    if (isset($_SESSION['edit_message'])) {
-        echo "<p>" . $_SESSION['edit_message'] . "</p>";
-        //unset($_SESSION['edit_message']);
-    }
-
-    if (isset($_SESSION['delete_message'])) {
-        echo "<p>" . $_SESSION['delete_message'] . "</p>";
-        //unset($_SESSION['delete_message']);
+function renderUserInfos() {
+    if(isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname']) && isset($_SESSION['user_email'])) {
+        echo "\n" . "<h6 class='text-center mb-3'><span class='text-success'>" . $_SESSION['user_firstname'] . "</span> / <span class='text-success'>" . $_SESSION['user_lastname'] . "</span> / <span class='text-success'>" . $_SESSION['user_email'] . "</span></h6>";
     }
 }
 
-function displayLoginForm()
+function renderLoginForm()
 {
     echo "\n" . "<h3 class='h5 text-center mb-3'>Veuillez vous connecter</h3>";
     echo "\n" . "<form class='d-flex gap-3 justify-content-center flex-wrap' action='index.php?page=membres' method='post'>";
@@ -140,31 +137,14 @@ function displayLoginForm()
     echo "\n" . "</form>";
 }
 
-function readCsv()
-{
-    $users = [];
-    $file_path = "./src/datas/users.csv";
-    if (file_exists($file_path)) {
-        $file_pointer = fopen($file_path, "r");
-        while ($data = fgetcsv($file_pointer, null, ",")) {
-            $users[] = [
-                "firstname" => $data[0],
-                "lastname" => $data[1],
-                "email" => $data[2]
-            ];
-        }
-    }
-    return $users;
-}
-
 function renderUserList($users)
 {
     //$cpt = 0;
     echo "<table class='table'>";
     echo "\n" . "<tr>";
-    echo "\n" . "<th>Prénom</th>";
-    echo "\n" . "<th>Nom</th>";
-    echo "\n" . "<th>Email</th>";
+    echo "\n" . "<th><a href='index.php?page=membres&action=sort&cat=firstname' class='link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover'>Prénom</a></th>";
+    echo "\n" . "<th><a href='index.php?page=membres&action=sort&cat=lastname' class='link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover'>Nom</a></th>";
+    echo "\n" . "<th><a href='index.php?page=membres&action=sort&cat=email' class='link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover'>Email</a></th>";
     echo "\n" . "<th>Actions</th>";
     echo "\n" . "</tr>";
 
@@ -182,49 +162,75 @@ function renderUserList($users)
         echo "\n" . "</form>";
         echo "\n" . "</td>";
         echo "\n" . "</tr>";
-        //$cpt++;
     }
 
     echo "</table>";
 }
 
-function renderAddUserButton() {
+function renderAddUserButton()
+{
     echo "\n" . "<form class='d-flex justify-content-center' method='get'>";
     echo "\n" . "<input type='hidden' name='page' value='membres'>";
-    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' name='action' value='add' formaction='index.php?action=new-user'>Ajouter un Utilisateur</button>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' name='action' value='new-user' formaction='index.php'>Ajouter un Utilisateur</button>";
     echo "\n" . "</form>";
 }
 
-function editUpdateUser($user)
+function renderUpdateUser($user)
 {
     //echo "'show_update_form' : " . $_SESSION['show_update_form'];
     //if($_SESSION['show_update_form']) {
-        echo "\n" . "<div id='div-edit-user'>";
-        echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
-        echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >";
+    echo "\n" . "<div id='div-edit-user'>";
+    echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
+    echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=update' method='post' >";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='firstname'>Prénom</label>";
+    echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='lastname'>Nom</label>";
+    echo "\n" . "<input type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='email'>Email</label>";
+    echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
+    echo "\n" . "</div>";
+    echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
+    echo "\n" . "<input type='hidden' name='action' value='update'>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Mettre à jour</button>";
+    echo "\n" . "</form>";
+    echo "\n" . "</div>";
+    //}     
+
+}
+
+function renderAddUser()
+{
+    echo "\n" . "<div id='div-add-user'>";
+        echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
+        echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
         echo "\n" . "<div>";
         echo "\n" . "<label class='' for='firstname'>Prénom</label>";
-        echo "\n" . "<input type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
+        echo "\n" . "<input type='text' name='firstname' id='firstname' value=''>";
         echo "\n" . "</div>";
         echo "\n" . "<div>";
         echo "\n" . "<label class='' for='lastname'>Nom</label>";
-        echo "\n" . "<input type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
+        echo "\n" . "<input type='text' name='lastname' id='lastname' value=''>";
         echo "\n" . "</div>";
         echo "\n" . "<div>";
         echo "\n" . "<label class='' for='email'>Email</label>";
-        echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
+        echo "\n" . "<input type='text' name='email' id='email' value=''>";
         echo "\n" . "</div>";
-        echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
-        echo "\n" . "<input type='hidden' name='action' value='update'>";
-        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Mettre à jour</button>"; 
+        echo "\n" . "<div>";
+        echo "\n" . "<label class='' for='password'>Mot de passe</label>";
+        echo "\n" . "<input type='password' name='password' id='password' value=''>";
+        echo "\n" . "</div>";
+        echo "\n" . "<input type='hidden' name='action' value='add'>";
+        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>";
         echo "\n" . "</form>";
         echo "\n" . "</div>";
-    //}     
-    
-}
-
-function editAddUser() {
-    if($_SESSION['show_add_form']) {
+        $_SESSION['show_add_form'] = false;
+    /*
+    if ($_SESSION['show_add_form']) {
         echo "\n" . "<div id='div-add-user'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
         echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
@@ -245,16 +251,13 @@ function editAddUser() {
         echo "\n" . "<input type='password' name='password' id='password' value=''>";
         echo "\n" . "</div>";
         echo "\n" . "<input type='hidden' name='action' value='add'>";
-        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>"; 
+        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>";
         echo "\n" . "</form>";
         echo "\n" . "</div>";
-        
         $_SESSION['show_add_form'] = false;
-        
-    }
-    else {
+    } else {
         renderAddUserButton();
-    }
+    }*/
 }
 
 ?>
