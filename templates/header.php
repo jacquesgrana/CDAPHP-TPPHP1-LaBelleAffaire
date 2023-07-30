@@ -6,13 +6,13 @@ if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   renderUser();
   //echo "\n" . "<button class='brn btn-warning' onclick=''>Déconnexion</button>";
   echo "\n" . "<form class='mt-4 me-5 w-100 d-flex position-fixed justify-content-end' action='index.php?page=accueil&action=logout' method='post'>";
-  echo "\n" . "<input class='btn btn-warning position-fixed' type='submit' value='Se déconnecter'>";
+  echo "\n" . "<input class='btn btn-sm btn-warning position-fixed' type='submit' value='✘ Se Déconnecter'>";
   echo "\n" . "</form>";
 }
 
 function renderUser() {
   if(isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname']) && isset($_SESSION['user_email'])) {
-      echo "\n" . "<h6 class='mb-3'><span class='text-warning'>" . $_SESSION['user_firstname'] . "</span> / <span class='text-warning'>" . $_SESSION['user_lastname'] . "</span> / <span class='text-warning'>" . $_SESSION['user_email'] . "</span></h6>";
+      echo "\n" . "<h6 class='mb-3'><span class='text-warning'>" . $_SESSION['user_firstname'] . "</span> • <span class='text-warning'>" . $_SESSION['user_lastname'] . "</span> • <span class='text-warning'>" . $_SESSION['user_email'] . "</span></h6>";
   }
 }
   ?>

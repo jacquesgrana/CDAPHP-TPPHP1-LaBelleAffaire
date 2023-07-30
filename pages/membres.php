@@ -116,7 +116,7 @@ function run($users)
 
 function renderUserInfos() {
     if(isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname']) && isset($_SESSION['user_email'])) {
-        echo "\n" . "<h6 class='text-center mb-3'><span class='text-success'>" . $_SESSION['user_firstname'] . "</span> / <span class='text-success'>" . $_SESSION['user_lastname'] . "</span> / <span class='text-success'>" . $_SESSION['user_email'] . "</span></h6>";
+        echo "\n" . "<h6 class='text-center mb-3'><span class='text-success'>" . $_SESSION['user_firstname'] . "</span> • <span class='text-success'>" . $_SESSION['user_lastname'] . "</span> • <span class='text-success'>" . $_SESSION['user_email'] . "</span></h6>";
     }
 }
 
@@ -157,8 +157,8 @@ function renderUserList($users)
         echo "\n" . "<form class='d-flex gap-2' method='get'>";
         echo "\n" . "<input type='hidden' name='page' value='membres'>";
         echo "\n" . "<input type='hidden' name='index' value='" . $index . "'>";
-        echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='edit' formaction='index.php?page=membres&action=edit'>Editer</button>";
-        echo "\n" . "<button class='btn btn-danger btn-sm' type='submit' name='action' value='delete' formaction='index.php?page=membres&action=delete'>Supprimer</button>";
+        echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='edit' formaction='index.php?page=membres&action=edit'>✎ Editer</button>";
+        echo "\n" . "<button class='btn btn-danger btn-sm' type='submit' name='action' value='delete' formaction='index.php?page=membres&action=delete'>✘ Supprimer</button>";
         echo "\n" . "</form>";
         echo "\n" . "</td>";
         echo "\n" . "</tr>";
@@ -171,7 +171,7 @@ function renderAddUserButton()
 {
     echo "\n" . "<form class='d-flex justify-content-center' method='get'>";
     echo "\n" . "<input type='hidden' name='page' value='membres'>";
-    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' name='action' value='new-user' formaction='index.php'>Ajouter un Utilisateur</button>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit' name='action' value='new-user' formaction='index.php'>+ Ajouter un Utilisateur</button>";
     echo "\n" . "</form>";
 }
 
@@ -196,7 +196,7 @@ function renderUpdateUser($user)
     echo "\n" . "</div>";
     echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
     echo "\n" . "<input type='hidden' name='action' value='update'>";
-    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Mettre à jour</button>";
+    echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>✔ Mettre à jour</button>";
     echo "\n" . "</form>";
     echo "\n" . "</div>";
     //}     
