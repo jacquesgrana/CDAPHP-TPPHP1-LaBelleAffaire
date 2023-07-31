@@ -148,7 +148,8 @@ function addUser($user)
 }
 
 /**
- * Fonction qui tri le fichier .csv selon $cat et le sauvegarde.
+ * Fonction qui tri le fichier .csv selon $cat et le sauvegarde avec changement du
+ * type de tri (asc ou desc) à chaque clic en utilisant 3 variables de session.
  * @param $cat string : critère de tri.
  */
 function sortUsers($cat)
@@ -157,7 +158,7 @@ function sortUsers($cat)
     switch ($cat) {
         case "firstname":
             if (!isset($_SESSION['sort_type_firstname'])) {
-                $_SESSION['sort_type_firstname'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+                $_SESSION['sort_type_firstname'] = 'asc';
             }
             if($_SESSION['sort_type_firstname'] === 'asc') {
                 $_SESSION['sort_type_firstname'] = 'desc';
@@ -171,7 +172,7 @@ function sortUsers($cat)
             break;
         case "lastname":
             if (!isset($_SESSION['sort_type_lastname'])) {
-                $_SESSION['sort_type_lastname'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+                $_SESSION['sort_type_lastname'] = 'asc';
             }
             if($_SESSION['sort_type_lastname'] === 'asc') {
                 $_SESSION['sort_type_lastname'] = 'desc';
@@ -185,7 +186,7 @@ function sortUsers($cat)
             break;
         case "email":
             if (!isset($_SESSION['sort_type_email'])) {
-                $_SESSION['sort_type_email'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+                $_SESSION['sort_type_email'] = 'asc';
             }
             if($_SESSION['sort_type_email'] === 'asc') {
                 $_SESSION['sort_type_email'] = 'desc';

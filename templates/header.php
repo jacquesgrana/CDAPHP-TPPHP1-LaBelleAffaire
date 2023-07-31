@@ -1,5 +1,5 @@
 <header class="bg-success w-100 m-0 fixed-top d-flex flex-column justify-content-center align-items-center">
-  <h1 class="mt-5 mx-5 mb-3 text-center">Association La belle affaire</h1>
+  <h1 class="mt-5 mx-5 mb-3 text-center w-50">Association La belle affaire</h1>
   <?php
   //session_start();
 if (isset($_SESSION['user']) && $_SESSION['user'] === true) {

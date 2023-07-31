@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="./favicon.ico" />
   <title>
-    <?php 
+    <?php
     echo (isset($_GET['page']) ?  $_GET['page'] : "Titre par défaut !!!");
     ?>
   </title>
@@ -18,10 +18,31 @@
     header {
       margin-bottom: 0;
     }
+
     main {
       margin-top: 220px !important;
       margin-bottom: 160px;
     }
+
+    .div-form {
+      background-color: #b3f2ca;
+    }
+
+    .input-form {
+      border-radius: 5px;
+      border: gray 1px solid;
+      height: 30px;
+      width: 260px;
+    }
+
+    .table-striped>tbody>tr:nth-child(odd)>td, 
+    .table-striped>tbody>tr:nth-child(odd)>th {
+   background-color: #b3f2ca;
+ }
+    .table-striped>tbody>tr:nth-child(even)>td, 
+    .table-striped>tbody>tr:nth-child(even)>th {
+   background-color: #e3f9eb;
+ }
   </style>
   <script defer>
     function submitAndResetDiv(e) {
