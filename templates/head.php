@@ -25,7 +25,7 @@
     }
 
     .div-form {
-      background-color: #b3f2ca;
+      background-color: #e3f9eb;
     }
 
     .input-form {
@@ -33,16 +33,16 @@
       border: gray 1px solid;
       height: 30px;
       width: 260px;
-      background-color: #e3f9eb;
+      background-color: #f2fcf6;
     }
 
     .table-striped>tbody>tr:nth-child(odd)>td, 
     .table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: #b3f2ca;
+   background-color: #e3f9eb;
  }
     .table-striped>tbody>tr:nth-child(even)>td, 
     .table-striped>tbody>tr:nth-child(even)>th {
-   background-color: #e3f9eb;
+   background-color: #f2fcf6;
  }
   </style>
   <script defer>
