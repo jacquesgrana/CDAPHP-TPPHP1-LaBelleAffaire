@@ -1,7 +1,11 @@
 <?php
 require_once(dirname(__FILE__) . '/../core/security.php');
 require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
-
+/*
+$_SESSION['sort_type_firstname'] = 'asc';
+$_SESSION['sort_type_lastname'] = 'asc';
+$_SESSION['sort_type_email'] = 'asc';
+*/
 run();
 
 /**
@@ -13,6 +17,7 @@ function run()
     $isLogged = false;
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         $isLogged = true;
+        
     } else {
         $isLogged = false;
     }
@@ -98,6 +103,7 @@ function run()
                 sortUsers($_GET["cat"]);
             }
         }
+        
         $users = getUsersToRender();
         renderUserList($users);
         if (!$_SESSION['show_add_form']) renderAddUserButton();

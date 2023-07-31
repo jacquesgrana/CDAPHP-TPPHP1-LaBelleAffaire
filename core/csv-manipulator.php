@@ -156,38 +156,87 @@ function sortUsers($cat)
     $users = getUsers();
     switch ($cat) {
         case "firstname":
-            usort($users, "compareFirstName");
+            if (!isset($_SESSION['sort_type_firstname'])) {
+                $_SESSION['sort_type_firstname'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+            }
+            if($_SESSION['sort_type_firstname'] === 'asc') {
+                $_SESSION['sort_type_firstname'] = 'desc';
+                usort($users, "compareFirstNameAsc");
+            }
+            elseif($_SESSION['sort_type_firstname'] === 'desc') {
+                $_SESSION['sort_type_firstname'] = 'asc';
+                usort($users, "compareFirstNameDesc");
+            }
             saveUsers($users);
             break;
         case "lastname":
-            usort($users, "compareLastName");
+            if (!isset($_SESSION['sort_type_lastname'])) {
+                $_SESSION['sort_type_lastname'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+            }
+            if($_SESSION['sort_type_lastname'] === 'asc') {
+                $_SESSION['sort_type_lastname'] = 'desc';
+                usort($users, "compareLastNameAsc");
+            }
+            elseif($_SESSION['sort_type_lastname'] === 'desc') {
+                $_SESSION['sort_type_lastname'] = 'asc';
+                usort($users, "compareLastNameDesc");
+            }
             saveUsers($users);
             break;
         case "email":
-            usort($users, "compareEmail");
+            if (!isset($_SESSION['sort_type_email'])) {
+                $_SESSION['sort_type_email'] = 'asc'; // Initialisation de la variable de session si elle n'existe pas
+            }
+            if($_SESSION['sort_type_email'] === 'asc') {
+                $_SESSION['sort_type_email'] = 'desc';
+                usort($users, "compareEmailAsc");
+            }
+            elseif($_SESSION['sort_type_email'] === 'desc') {
+                $_SESSION['sort_type_email'] = 'asc';
+                usort($users, "compareEmailDesc");
+            }
             saveUsers($users);
             break;
     }
 }
 
 /**
- * Comparator sur le firstname.
+ * Comparator sur le firstname asc.
  */
-function compareFirstName($userA, $userB) {
+function compareFirstNameAsc($userA, $userB) {
     return strcmp($userA[0], $userB[0]);
 }
 
 /**
- * Comparator sur le lastname.
+ * Comparator sur le lastname asc.
  */
-function compareLastName($userA, $userB) {
+function compareLastNameAsc($userA, $userB) {
     return strcmp($userA[1], $userB[1]);
 }
 
 /**
- * Comparator sur l'email'.
+ * Comparator sur l'email' asc.
  */
-function compareEmail($userA, $userB) {
+function compareEmailAsc($userA, $userB) {
     return strcmp($userA[2], $userB[2]);
+}
+/**
+ * Comparator sur le firstname asc.
+ */
+function compareFirstNameDesc($userA, $userB) {
+    return strcmp($userB[0], $userA[0]);
+}
+/**
+ * Comparator sur le lastname asc.
+ */
+function compareLastNameDesc($userA, $userB) {
+    return strcmp($userB[1], $userA[1]);
+}
+
+/**
+ * Comparator sur l'email' asc.
+ */
+function compareEmailDesc($userA, $userB) {
+    return strcmp($userB[2], $userA[2]);
 }
 ?>
