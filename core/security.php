@@ -7,13 +7,13 @@
  */
 function connect()
 {
-    session_start();
+    //session_start();
     // soit l'utilisateur vient de remplir le formulaire et on vérifie login/pw
     if (isset($_POST['connexion']) && $_POST['connexion'] === 'connect') {
-        session_destroy();
+        //session_destroy();
         if (isset($_POST['email']) && isset($_POST['password'])) {
             if (search_user($_POST['email'], $_POST['password']) === true) {
-                session_start();
+                //session_start();
                 
                 set_user_session_infos($_POST['email']);
                 $_SESSION['user'] = true;
@@ -37,6 +37,7 @@ function set_user_session_infos($email) {
              $user = $u;
         }
     }
+    //var_dump($user);
     $_SESSION['user_firstname'] = $user["firstname"];
     $_SESSION['user_lastname'] = $user["lastname"];
     $_SESSION['user_email'] = $email;
@@ -60,6 +61,7 @@ function getUsersToFilter()
             ];
         }
     }
+    //var_dump($users);
     return $users;
 }
 

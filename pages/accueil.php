@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 require_once(dirname(__FILE__) . '/../core/security.php');
 
 
@@ -12,10 +12,15 @@ if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
       if ($_GET["action"] === "logout" && $_GET["page"] === "accueil") {
         //if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         disconnect();
-        header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
-        exit();
+        //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+        redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+        //exit();
         //}
       }
     }
   }
+
+  function redirect($url) {
+    echo '<script type="text/javascript"> window.location="' . $url . '";</script>';
+}
 ?>

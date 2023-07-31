@@ -1,7 +1,7 @@
 <header class="bg-success w-100 m-0 fixed-top d-flex flex-column justify-content-center align-items-center">
   <h1 class="mt-5 mx-5 mb-3 text-center">Association La belle affaire</h1>
   <?php
-  session_start();
+  //session_start();
 if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   renderUser();
   //echo "\n" . "<button class='brn btn-warning' onclick=''>Déconnexion</button>";

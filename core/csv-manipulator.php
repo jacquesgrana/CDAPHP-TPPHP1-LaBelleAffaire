@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 /**
  * Librairie dédiée à la manipulation du fichier .csv de données.
  */
@@ -119,9 +119,14 @@ function updateUser($user)
     // charger tous les user
     $id = $user[4];
     $users = getUsers();
-    $users[$id][0] = $user[0];
-    $users[$id][1] = $user[1];
-    $users[$id][2] = $user[2];
+    $users[$id][0] = trim($user[0]);
+    $users[$id][1] = trim($user[1]);
+    $users[$id][2] = trim($user[2]);
+    if($user[3] !== '') {
+        $pwd = trim($user[3]);
+        $hash = password_hash($pwd, PASSWORD_DEFAULT);
+        $users[$id][3] = $hash;
+    }
     saveUsers($users);
 }
 
@@ -131,7 +136,10 @@ function updateUser($user)
  */
 function addUser($user)
 {
-    $pwd = $user[3];
+    $user[0] = trim($user[0]);
+    $user[1] = trim($user[1]);
+    $user[2] = trim($user[2]);
+    $pwd = trim($user[3]);
     $hash = password_hash($pwd, PASSWORD_DEFAULT);
     $user[3] = $hash;
     $users = getUsers();
@@ -182,3 +190,4 @@ function compareLastName($userA, $userB) {
 function compareEmail($userA, $userB) {
     return strcmp($userA[2], $userB[2]);
 }
+?>

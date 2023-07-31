@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once(dirname(__FILE__) . '/../core/security.php');
 require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 
@@ -18,31 +17,48 @@ function run()
         $isLogged = false;
     }
 
+    /**
+     * Cas où on se logge ou pas
+     */
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
             $_SESSION['show_add_form'] = false;
-            header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+            redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+
+            //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
         } else {
-            header('Location : .');
+            //header('Location : .');
+            redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+
         }
     }
 
+    /**
+     * gestion de la requete d'édition et de la suppression : appel fonctions de csv-manipulator
+     */
     if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["index"])) {
             $id = $_GET["index"];
             if ($_GET["action"] === "edit" && $_GET["page"] === "membres") {
                 editUser($id);
-                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+
                 exit();
             } elseif ($_GET["action"] === "delete" && $_GET["page"] === "membres") {
                 deleteUser($id);
-                header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+
                 exit();
             }
         }
     }
 
+    /**
+     * gestion de la requete des formulaires de mise a jour et d'ajout d'un user
+     */
     if (isset($_POST["action"]) && isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_GET["action"]) && isset($_GET["page"])) {
         if ($isLogged && $_GET["page"] === "membres") {
             if ($_POST["action"] === "update" && $_GET["action"] === "update") {
@@ -50,9 +66,10 @@ function run()
                 $user[0] = $_POST["firstname"];
                 $user[1] = $_POST["lastname"];
                 $user[2] = $_POST["email"];
-                $user[3] = "";
+                $user[3] = $_POST["password"];
                 $user[4] = $_POST["id"];
                 updateUser($user);
+                //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
             } elseif ($_POST["action"] === "add" && $_GET["action"] === "add") {
                 $user = [];
@@ -62,11 +79,17 @@ function run()
                 $user[3] = $_POST["password"];
                 addUser($user);
                 $_SESSION['show_add_form'] = false;
+                //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
             }
         }
     }
 
+    /**
+     * gestion des requêtes de tris et affichage des infos de l'user loggé, 
+     * de la liste des user et du bouton d'ajout ou, si on n'est pas loggé, 
+     * affiche le formulaire de login.
+     */
     if ($isLogged) {
         if(isset($_SESSION['user_email'])) renderUserInfos();
         if (isset($_GET["page"]) && isset($_GET["action"]) && isset($_GET["cat"])) {
@@ -82,14 +105,23 @@ function run()
         renderLoginForm();
     }
 
+    /**
+     * Affichage du formulaire d'ajout d'un user.
+     */
     if (isset($_GET["action"]) && isset($_GET["page"])) {
         if ($_GET["action"] === "new-user") {
             $_SESSION['show_add_form'] = true;
-            renderAddUser();
+            
+            //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+            
             header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+            renderAddUser();
         }
     }
 
+    /**
+     * Affichage du formulaire d'édition d'un user.
+     */
     if (isset($_SESSION['action_type'])) {
         if ($_SESSION['action_type'] === 'delete') {
             //unset($_SESSION['action_type']);
@@ -100,13 +132,20 @@ function run()
                 $string = $_SESSION['user_datas'];
                 $user = explode(",", $string);
                 $_SESSION['action_type'] = "";
-                renderUpdateUser($user);
+                //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+
                 header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                renderUpdateUser($user);
+                
                 //unset($_SESSION['user']);
             }
             //unset($_SESSION['action_type']);
         }
     }
+}
+
+function redirect($url) {
+    echo '<script type="text/javascript"> window.location="' . $url . '";</script>';
 }
 
 /**
@@ -201,6 +240,10 @@ function renderUpdateUser($user)
     echo "\n" . "<label class='' for='email'>Email</label>";
     echo "\n" . "<input type='text' name='email' id='email' value=" . $user[2] . ">";
     echo "\n" . "</div>";
+    echo "\n" . "<div>";
+    echo "\n" . "<label class='' for='password'>Mot de passe</label>";
+    echo "\n" . "<input type='password' name='password' id='password' value='' placeholder='Laisser vide si pas de nouveau mot de passe'>";
+    echo "\n" . "</div>";
     echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
     echo "\n" . "<input type='hidden' name='action' value='update'>";
     echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>✔ Mettre à jour</button>";
@@ -218,6 +261,7 @@ function renderAddUser()
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
         echo "\n" . "<form id='form-add-user' class='d-flex flex-column align-items-center gap-3' action='index.php?page=membres&action=add' method='post' >";
         echo "\n" . "<div>";
+
         echo "\n" . "<label class='' for='firstname'>Prénom</label>";
         echo "\n" . "<input type='text' name='firstname' id='firstname' value=''>";
         echo "\n" . "</div>";
@@ -234,7 +278,7 @@ function renderAddUser()
         echo "\n" . "<input type='password' name='password' id='password' value=''>";
         echo "\n" . "</div>";
         echo "\n" . "<input type='hidden' name='action' value='add'>";
-        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>Ajouter</button>";
+        echo "\n" . "<button class='btn btn-primary btn-sm' type='submit'>+ Ajouter</button>";
         echo "\n" . "</form>";
         echo "\n" . "</div>";
         $_SESSION['show_add_form'] = false;
