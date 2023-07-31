@@ -33,6 +33,7 @@
       border: gray 1px solid;
       height: 30px;
       width: 260px;
+      background-color: #e3f9eb;
     }
 
     .table-striped>tbody>tr:nth-child(odd)>td, 

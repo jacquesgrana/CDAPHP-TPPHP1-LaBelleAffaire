@@ -174,11 +174,11 @@ function renderLoginForm()
     echo "\n" . "<form class='d-flex gap-3 flex-column align-items-start flex-wrap' action='index.php?page=membres' method='post'>";
     echo "\n" . "<div class='d-flex'>";
     echo "\n" . "<label class='me-2 pt-1' for='email'>Email</label>";
-    echo "\n" . "<input class='' type='email' id='email' name='email'>";
+    echo "\n" . "<input class='input-form px-2' type='email' id='email' name='email'>";
     echo "\n" . "</div>";
     echo "\n" . "<div class='d-flex'>";
     echo "\n" . "<label class='me-2 pt-1' for='password'>Mot de Passe</label>";
-    echo "\n" . "<input class='' type='password' name='password' id='password'>";
+    echo "\n" . "<input class='input-form px-2' type='password' name='password' id='password'>";
     echo "\n" . "<input type='hidden' name='connexion' value='connect'>";
     echo "\n" . "</div>";
     echo "\n" . "<div class='w-100 d-flex justify-content-center'>";
