@@ -4,14 +4,16 @@ require_once(dirname(__FILE__) . '/../core/csv-manipulator.php');
 
 run();
 
+/**
+ * Fonction principale de la page, gère les requêtes et appelle les fonctions d'affichage.
+ */
 function run()
 {
 
     $protocol = 'http://';
-    $user = [];
 
     //Cas où on se logge ou pas
-     
+
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
@@ -40,12 +42,13 @@ function run()
     }
 
     if ($isLogged) {
-        
+
         if (isset($_GET["action"]) && isset($_GET["page"])) {
             if ($_GET["page"] === "membres") {
 
                 if ($_GET["action"] === "new-user") {
                     $_SESSION['show_add_form'] = 'true';
+                    $_SESSION['show_update_form'] = 'false';
                 } elseif ($_GET["action"] === "add") {
                     if (isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_POST["password"])) {
                         $user = [];
@@ -61,7 +64,6 @@ function run()
                     $id = $_GET["index"];
                     editUser($id);
                     $_SESSION['show_update_form'] = 'true';
-
                 } elseif ($_GET["action"] === "update" && isset($_POST["id"])) {
                     $user = [];
                     $user[0] = $_POST["firstname"];
@@ -148,26 +150,29 @@ function run()
                 $_SESSION['action_type'] = "";
             } elseif ($_SESSION['action_type'] === 'edit') {
 
-                if (isset($_SESSION['user_datas'])) {
-                    $string = $_SESSION['user_datas'];
-                    $user = explode(",", $string);
-                    $_SESSION['action_type'] = "";
-                    //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                    $_SESSION['show_update_form'] = 'true';
-                    
-                    //renderUpdateUserForm($user); // *****************************************
-                    header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
 
-                    //unset($_SESSION['user']);
-                }
+                //$string = $_SESSION['user_datas'];
+                //$user = explode(",", $string);
+                $_SESSION['action_type'] = "";
+                //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                $_SESSION['show_update_form'] = 'true';
+                $_SESSION['show_add_form'] === 'false';
+                //renderUpdateUserForm($user); // *****************************************
+                header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+
+                //unset($_SESSION['user']);
+
                 //unset($_SESSION['action_type']);
             }
         }
     }
-    renderPage($isLogged, $user);
+    renderPage($isLogged);
 }
 
-function renderPage($isLogged, $user)
+/**
+ * Fonction qui affiche la page.
+ */
+function renderPage($isLogged)
 {
     echo '<h2 class="text-center mb-3">Membres</h2>';
     if ($isLogged) {
@@ -176,23 +181,25 @@ function renderPage($isLogged, $user)
         renderUserList($users);
         if ($_SESSION['show_add_form'] === 'false') renderAddUserButton();
         if ($_SESSION['show_add_form'] === 'true') renderAddUserForm();
-        //echo '$_SESSION["show_update_form"] : ' . $_SESSION['show_update_form'];
-        //echo '$user[0] :' . $user[0];
-        // **********************************************************
-        $string = $_SESSION['user_datas'];
-        $user = explode(",", $string);
-        //echo '$_SESSION["user_datas" : ' . $_SESSION['user_datas'];
-        //echo '$user[1] : ', $user[1];
-        if ($_SESSION['show_update_form'] === 'true') renderUpdateUserForm($user);
+        // && $_SESSION['show_update_form'] === 'false'
+        if (isset($_SESSION['user_datas'])) {
+            $string = $_SESSION['user_datas'];
+            $user = explode(",", $string);
+            if ($_SESSION['show_update_form'] === 'true') renderUpdateUserForm($user);
+        // && $_SESSION['show_edit_form'] === 'false'
+
+        }
     } else {
         renderLoginForm();
     }
 }
 
 /**
- * Function for redirection with query parameters.
- * @param string $url The URL to redirect to.
- * @param array $queryParameters An associative array containing query parameters.
+ * Fonction qui redirige vers $url avec des paramtres dans la query string.
+ * Utilise du js pour moins utiliser la fonction 'header' de php.
+ * @param string $url : destination de la redirection.
+ * @param array $queryParameters : tableau associatif contenant les paramètres 
+ * de la query string.
  */
 function redirect($url, $queryParameters = [])
 {
@@ -306,7 +313,7 @@ function renderUpdateUserForm($user)
     echo "\n" . "</div>";
     echo "\n" . "<div>";
     echo "\n" . "<label class='me-2' for='email'>Email</label>";
-    echo "\n" . "<input class='input-form px-2' type='email' name='email' id='email' value=" . $user[2] . ">";
+    echo "\n" . '<input class="input-form px-2" type="email" name="email" id="email" value=' . "'$user[2]'" . '>';
     echo "\n" . "</div>";
     echo "\n" . "<div>";
     echo "\n" . "<label class='me-2' for='password'>Mot de passe</label>";
