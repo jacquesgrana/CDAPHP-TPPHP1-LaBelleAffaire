@@ -8,7 +8,7 @@
   <link rel="icon" href="./favicon.ico" />
   <title>
     <?php
-    echo (isset($_GET['page']) ?  $_GET['page'] : "Titre par défaut !!!");
+    echo (isset($_GET['page']) ?  $_GET['page'] : "accueil");
     ?>
   </title>
 

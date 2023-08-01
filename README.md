@@ -11,3 +11,5 @@
 - email : 'adeloin@hotmail.com'
 
 - mot de passe : 'adeloin'
+
+- exemple : [projet hébergé](https://tp1php.000webhostapp.com)

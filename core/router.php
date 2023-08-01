@@ -16,3 +16,4 @@ if (isset($_GET["page"])) {
 }
 
 require_once(dirname(__FILE__) . '/../pages/' . $page);
+?>
