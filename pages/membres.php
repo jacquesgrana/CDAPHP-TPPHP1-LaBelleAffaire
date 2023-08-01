@@ -154,6 +154,7 @@ function run()
                     $_SESSION['action_type'] = "";
                     //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                     $_SESSION['show_update_form'] = 'true';
+                    
                     //renderUpdateUserForm($user); // *****************************************
                     header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
 
@@ -179,7 +180,9 @@ function renderPage($isLogged, $user)
         //echo '$user[0] :' . $user[0];
         // **********************************************************
         $string = $_SESSION['user_datas'];
-                    $user = explode(",", $string);
+        $user = explode(",", $string);
+        //echo '$_SESSION["user_datas" : ' . $_SESSION['user_datas'];
+        //echo '$user[1] : ', $user[1];
         if ($_SESSION['show_update_form'] === 'true') renderUpdateUserForm($user);
     } else {
         renderLoginForm();
@@ -288,17 +291,18 @@ function renderAddUserButton()
  */
 function renderUpdateUserForm($user)
 {
+    //echo'$user[1] : ' . $user[1];
     echo "\n" . "<div id='div-edit-user' class='d-flex flex-column align-items-center'>";
     echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
     echo "\n" . "<div class='div-form d-flex justify-content-center border border-secondary rounded w-50 p-4 pb-3'>";
     echo "\n" . "<form id='form-update-user' class='d-flex flex-column align-items-start gap-3' action='index.php?page=membres&action=update' method='post'>";
     echo "\n" . "<div>";
     echo "\n" . "<label class='me-2' for='firstname'>Prénom</label>";
-    echo "\n" . "<input class='input-form px-2' type='text' name='firstname' id='firstname' value=" . $user[0] . ">";
+    echo "\n" . '<input class="input-form px-2" type="text" name="firstname" id="firstname" value=' . "'$user[0]'" . '>';
     echo "\n" . "</div>";
     echo "\n" . "<div>";
     echo "\n" . "<label class='me-2' for='lastname'>Nom</label>";
-    echo "\n" . "<input class='input-form px-2' type='text' name='lastname' id='lastname' value=" . $user[1] . ">";
+    echo "\n" . '<input class="input-form px-2" type="text" name="lastname" id="lastname" value=' . "'$user[1]'" . '>';
     echo "\n" . "</div>";
     echo "\n" . "<div>";
     echo "\n" . "<label class='me-2' for='email'>Email</label>";
