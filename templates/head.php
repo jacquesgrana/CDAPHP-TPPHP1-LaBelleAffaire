@@ -45,11 +45,4 @@
    background-color: #f2fcf6;
  }
   </style>
-  <script defer>
-    function submitAndResetDiv(e) {
-      //e.preventDefault();
-      //document.getElementById("form-update-user").submit();
-      document.getElementById('div-edit-user').style.display = 'none';
-    }
-  </script>
 </head>

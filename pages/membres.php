@@ -12,8 +12,7 @@ function run()
 
     $protocol = 'http://';
 
-    //Cas où on se logge ou pas
-
+    // Cas où on se logge avec les bons credentials ou pas
     if (isset($_POST["email"]) && isset($_POST["password"])) {
         connect();
         if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
@@ -24,13 +23,11 @@ function run()
             if (!isset($_SESSION['show_update_form'])) {
                 $_SESSION['show_update_form'] = 'false';
             }
-            $_SESSION['show_update_form'] = 'false';
             redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
-
             //header('Location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
         } else {
             //header('Location : .');
-            redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
+            redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'accueil']);
         }
     }
 
@@ -42,14 +39,16 @@ function run()
     }
 
     if ($isLogged) {
-
         if (isset($_GET["action"]) && isset($_GET["page"])) {
             if ($_GET["page"] === "membres") {
-
+                // affichage du formulaire d'ajout d'un nouvel user
                 if ($_GET["action"] === "new-user") {
                     $_SESSION['show_add_form'] = 'true';
                     $_SESSION['show_update_form'] = 'false';
-                } elseif ($_GET["action"] === "add") {
+                }
+                // recupération des données de la requête d'ajoût d'un nouvel user
+                // et ajout du nouvel user dans la fichier .csv
+                elseif ($_GET["action"] === "add") {
                     if (isset($_POST["firstname"]) && isset($_POST["lastname"]) && isset($_POST["email"]) && isset($_POST["password"])) {
                         $user = [];
                         $user[0] = $_POST["firstname"];
@@ -60,11 +59,17 @@ function run()
                         $_SESSION['show_add_form'] = 'false';
                         header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                     }
-                } elseif ($_GET["action"] === "edit" && isset($_GET["index"])) {
+                } 
+                // affichage du formulaire d'éditeon/modification d'un user
+                elseif ($_GET["action"] === "edit" && isset($_GET["index"])) {
                     $id = $_GET["index"];
                     editUser($id);
+                    $_SESSION['show_add_form'] = 'false';
                     $_SESSION['show_update_form'] = 'true';
-                } elseif ($_GET["action"] === "update" && isset($_POST["id"])) {
+                } 
+                // recupération des données de la requête d'édition/modification d'un user
+                // et mise à jour de l'user dans la fichier .csv
+                elseif ($_GET["action"] === "update" && isset($_POST["id"])) {
                     $user = [];
                     $user[0] = $_POST["firstname"];
                     $user[1] = $_POST["lastname"];
@@ -74,83 +79,28 @@ function run()
                     updateUser($user);
                     $_SESSION['show_update_form'] = 'false';
                     header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                } elseif ($_GET["action"] === "delete" && isset($_GET["index"])) {
+                } 
+                // suppression d'un user selon son id
+                elseif ($_GET["action"] === "delete" && isset($_GET["index"])) {
                     $id = $_GET["index"];
                     deleteUser($id);
-                } elseif ($_GET["action"] === "sort" && isset($_GET["cat"])) {
+                    redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
+                } 
+                // gestion des tris du fichier .csv
+                elseif ($_GET["action"] === "sort" && isset($_GET["cat"])) {
                     $_SESSION['show_add_form'] = 'false';
                     sortUsers($_GET["cat"]);
                 }
-
-                /*
-                if ($_GET["action"] === "new-user") {
-                    $_SESSION['show_add_form'] = 'true';
-
-                    //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-
-                    header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                    //renderAddUserForm();
-                }
-
-
-
-
-
-                if (isset($_POST["action"])) {
-                    if ($_POST["action"] === "add" && $_GET["action"] === "add") {
-                        $user = [];
-                        $user[0] = $_POST["firstname"];
-                        $user[1] = $_POST["lastname"];
-                        $user[2] = $_POST["email"];
-                        $user[3] = $_POST["password"];
-                        addUser($user);
-                        $_SESSION['show_add_form'] = 'false';
-                        //redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
-                        // ****************************** warnings : remplacer header
-                        header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                    }
-
-                    if ($_POST["action"] === "update" && $_GET["action"] === "update") {
-                        $user = [];
-                        $user[0] = $_POST["firstname"];
-                        $user[1] = $_POST["lastname"];
-                        $user[2] = $_POST["email"];
-                        $user[3] = $_POST["password"];
-                        $user[4] = $_POST["id"];
-                        updateUser($user);
-                        $_SESSION['show_update_form'] = 'false';
-                        //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                        header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
-                    }
-                }
-
-
-
-                if (isset($_GET["index"])) {
-                    $id = $_GET["index"];
-                    if ($_GET["action"] === "delete") {
-                        deleteUser($id);
-                    }
-                    if ($_GET["action"] === "edit") {
-                        editUser($id);
-                    }
-                }
-
-                if (isset($_GET["cat"])) {
-                    if ($_GET["action"] === "sort") {
-                        $_SESSION['show_add_form'] = 'false';
-                        sortUsers($_GET["cat"]);
-                    }
-                }*/
             }
         }
-
         if (isset($_SESSION['action_type'])) {
+            // efface la variable de session modifiée par deleteUser($id)
             if ($_SESSION['action_type'] === 'delete') {
                 $_SESSION['action_type'] = "";
-            } elseif ($_SESSION['action_type'] === 'edit') {
-
-
+            } 
+            // commande l'affichage de l'user à éditer/modifier
+            // efface la variable de session modifiée par updateUser($user)
+            elseif ($_SESSION['action_type'] === 'edit') {
                 //$string = $_SESSION['user_datas'];
                 //$user = explode(",", $string);
                 $_SESSION['action_type'] = "";
@@ -158,11 +108,9 @@ function run()
                 $_SESSION['show_update_form'] = 'true';
                 $_SESSION['show_add_form'] === 'false';
                 //renderUpdateUserForm($user); // *****************************************
-                header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
+                redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
 
-                //unset($_SESSION['user']);
-
-                //unset($_SESSION['action_type']);
+                //header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
             }
         }
     }
@@ -209,6 +157,32 @@ function redirect($url, $queryParameters = [])
     }
     echo '<script type="text/javascript"> window.location="' . $url . '";</script>';
 }
+
+/**
+ * Fonction qui effectue une redirection côté client vers $url avec des paramètres dans la query string.
+ * Utilise une balise <meta> pour effectuer la redirection.
+ * @param string $url : destination de la redirection.
+ * @param array $queryParameters : tableau associatif contenant les paramètres de la query string.
+ */
+/*
+function htmlMetaRedirect($url, $queryParameters = [])
+{
+    $queryString = http_build_query($queryParameters);
+    if (!empty($queryString)) {
+        $url .= '?' . $queryString;
+    }
+
+    echo '<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="refresh" content="0; url=' . $url . '">
+    </head>
+    <body>
+        <!-- Redirection en cours... -->
+    </body>
+    </html>';
+    exit();
+}*/
 
 /**
  * Fonction qui affiche les infos du l'user loggé.
@@ -293,12 +267,11 @@ function renderAddUserButton()
 }
 
 /**
- * Fonction qui affiche le formulaire de modification de $user passé en paramètre.
- * @param $user [] : user à mettre à jour.
+ * Fonction qui affiche le formulaire d'édition/modification de l'$user passé en paramètre.
+ * @param $user [] : user à éditer/modifier.
  */
 function renderUpdateUserForm($user)
 {
-    //echo'$user[1] : ' . $user[1];
     echo "\n" . "<div id='div-edit-user' class='d-flex flex-column align-items-center'>";
     echo "\n" . "<h5 class='text-center mt-5 mb-3'>User</h5>";
     echo "\n" . "<div class='div-form d-flex justify-content-center border border-secondary rounded w-50 p-4 pb-3'>";
@@ -319,8 +292,8 @@ function renderUpdateUserForm($user)
     echo "\n" . "<label class='me-2' for='password'>Mot de passe</label>";
     echo "\n" . "<input class='input-form px-2' type='password' name='password' id='password' value='' placeholder='Laisser vide si pas de changement'>";
     echo "\n" . "</div>";
-    echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
-    //echo "\n" . "<input type='hidden' name='action' value='update'>";
+    //echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
+    echo "\n" . '<input type="hidden" name="id" id="id" value=' . "'$user[4]'" . '>';
     echo "\n" . "<div class='w-100 d-flex justify-content-center'>";
     echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='update'>✔ Valider</button>";
     echo "\n" . "</div>";
@@ -334,7 +307,6 @@ function renderUpdateUserForm($user)
  */
 function renderAddUserForm()
 {
-    if ($_SESSION['show_add_form'] === 'true') {
         echo "\n" . "<div id='div-add-user' class='d-flex flex-column align-items-center'>";
         echo "\n" . "<h5 class='text-center mt-5 mb-3'>Nouvel utilisateur</h5>";
         echo "\n" . "<div class='div-form d-flex justify-content-center border border-secondary rounded w-50 p-4 pb-3'>";
@@ -355,13 +327,10 @@ function renderAddUserForm()
         echo "\n" . "<label class='me-2' for='password'>Mot de passe</label>";
         echo "\n" . "<input class='input-form px-2' type='password' name='password' id='password' value=''>";
         echo "\n" . "</div>";
-        //echo "\n" . "<input type='hidden' name='action' value='add'>";
         echo "\n" . "<div class='w-100 d-flex justify-content-center'>";
         echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='add'>✔ Valider</button>";
         echo "\n" . "</div>";
         echo "\n" . "</form>";
         echo "\n" . "</div>";
         echo "\n" . "</div>";
-        //$_SESSION['show_add_form'] = 'false';
-    }
 }

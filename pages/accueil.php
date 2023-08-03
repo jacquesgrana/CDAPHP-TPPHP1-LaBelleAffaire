@@ -13,8 +13,10 @@ if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         //if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
         disconnect();
         
-        //header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
-        redirect($protocol. $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+        //htmlMetaRedirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
+
+        header('location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
+        //redirect($protocol. $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
         //exit();
         //}
       }
@@ -24,4 +26,6 @@ if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   function redirect($url) {
     echo '<script type="text/javascript"> window.location="' . $url . '";</script>';
 }
+
+
 ?>

@@ -15,16 +15,13 @@ function deleteUser($id)
     // charger csv dans un tableau avec tout
     $users = getUsers();
     $user = $users[$id];
-
     // enlever du tableau l'element selon l'id
     $users = array_filter($users, fn ($u) => $u[4] != $id);
     // ecrire le fichier
     saveUsers($users);
-
     $_SESSION['action_type'] = "delete";
     $string = implode(",", $user);
     $_SESSION['user_datas'] = $string;
-    //return $user;
 }
 
 /**
@@ -81,6 +78,9 @@ function getUsersToRender()
             ];
         }
     }
+    else {
+        echo 'Erreur pendant l\'ouverture du fichier<br>';
+    }
     return $users;
 }
 
@@ -99,7 +99,6 @@ function saveUsers($users)
         $newUser[3] = $user[3];
         array_push($newUsers, $newUser);
     }
-
     if ($file = fopen(dirname(__FILE__) . '/../src/datas/users.csv', 'w')) {
         foreach ($newUsers as $user) {
             fputcsv($file, $user, ",");
@@ -122,7 +121,7 @@ function updateUser($user)
     $users[$id][0] = trim($user[0]);
     $users[$id][1] = trim($user[1]);
     $users[$id][2] = trim($user[2]);
-    if($user[3] !== '') {
+    if(trim($user[3]) !== '') {
         $pwd = trim($user[3]);
         $hash = password_hash($pwd, PASSWORD_DEFAULT);
         $users[$id][3] = $hash;
@@ -222,20 +221,20 @@ function compareEmailAsc($userA, $userB) {
     return strcmp($userA[2], $userB[2]);
 }
 /**
- * Comparator sur le firstname asc.
+ * Comparator sur le firstname desc.
  */
 function compareFirstNameDesc($userA, $userB) {
     return strcmp($userB[0], $userA[0]);
 }
 /**
- * Comparator sur le lastname asc.
+ * Comparator sur le lastname desc.
  */
 function compareLastNameDesc($userA, $userB) {
     return strcmp($userB[1], $userA[1]);
 }
 
 /**
- * Comparator sur l'email' asc.
+ * Comparator sur l'email' desc.
  */
 function compareEmailDesc($userA, $userB) {
     return strcmp($userB[2], $userA[2]);
