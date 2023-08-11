@@ -12,12 +12,9 @@
   */
 function deleteUser($id)
 {
-    // charger csv dans un tableau avec tout
     $users = getUsers();
     $user = $users[$id];
-    // enlever du tableau l'element selon l'id
     $users = array_filter($users, fn ($u) => $u[4] != $id);
-    // ecrire le fichier
     saveUsers($users);
     $_SESSION['action_type'] = "delete";
     $string = implode(",", $user);
@@ -115,7 +112,6 @@ function saveUsers($users)
  */
 function updateUser($user)
 {
-    // charger tous les user
     $id = $user[4];
     $users = getUsers();
     $users[$id][0] = trim($user[0]);

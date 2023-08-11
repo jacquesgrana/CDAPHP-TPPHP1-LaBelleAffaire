@@ -37,7 +37,6 @@ function set_user_session_infos($email) {
              $user = $u;
         }
     }
-    //var_dump($user);
     $_SESSION['user_firstname'] = $user["firstname"];
     $_SESSION['user_lastname'] = $user["lastname"];
     $_SESSION['user_email'] = $email;
@@ -61,7 +60,6 @@ function getUsersToFilter()
             ];
         }
     }
-    //var_dump($users);
     return $users;
 }
 

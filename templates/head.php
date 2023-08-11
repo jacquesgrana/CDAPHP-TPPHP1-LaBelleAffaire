@@ -11,9 +11,7 @@
     echo (isset($_GET['page']) ?  $_GET['page'] : "accueil");
     ?>
   </title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-
   <style>
     header {
       margin-bottom: 0;
@@ -36,13 +34,14 @@
       background-color: #f2fcf6;
     }
 
-    .table-striped>tbody>tr:nth-child(odd)>td, 
+    .table-striped>tbody>tr:nth-child(odd)>td,
     .table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: #e3f9eb;
- }
-    .table-striped>tbody>tr:nth-child(even)>td, 
+      background-color: #e3f9eb;
+    }
+
+    .table-striped>tbody>tr:nth-child(even)>td,
     .table-striped>tbody>tr:nth-child(even)>th {
-   background-color: #f2fcf6;
- }
+      background-color: #f2fcf6;
+    }
   </style>
 </head>

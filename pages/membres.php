@@ -24,9 +24,7 @@ function run()
                 $_SESSION['show_update_form'] = 'false';
             }
             redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
-            //header('Location: http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=accueil');
         } else {
-            //header('Location : .');
             redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'accueil']);
         }
     }
@@ -101,16 +99,10 @@ function run()
             // commande l'affichage de l'user à éditer/modifier
             // efface la variable de session modifiée par updateUser($user)
             elseif ($_SESSION['action_type'] === 'edit') {
-                //$string = $_SESSION['user_datas'];
-                //$user = explode(",", $string);
                 $_SESSION['action_type'] = "";
-                //redirect('http://' . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
                 $_SESSION['show_update_form'] = 'true';
                 $_SESSION['show_add_form'] === 'false';
-                //renderUpdateUserForm($user); // *****************************************
                 redirect($protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php', ['page' => 'membres']);
-
-                //header('location: ' . $protocol . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . '/index.php?page=membres');
             }
         }
     }
@@ -157,32 +149,6 @@ function redirect($url, $queryParameters = [])
     }
     echo '<script type="text/javascript"> window.location="' . $url . '";</script>';
 }
-
-/**
- * Fonction qui effectue une redirection côté client vers $url avec des paramètres dans la query string.
- * Utilise une balise <meta> pour effectuer la redirection.
- * @param string $url : destination de la redirection.
- * @param array $queryParameters : tableau associatif contenant les paramètres de la query string.
- */
-/*
-function htmlMetaRedirect($url, $queryParameters = [])
-{
-    $queryString = http_build_query($queryParameters);
-    if (!empty($queryString)) {
-        $url .= '?' . $queryString;
-    }
-
-    echo '<!DOCTYPE html>
-    <html>
-    <head>
-        <meta http-equiv="refresh" content="0; url=' . $url . '">
-    </head>
-    <body>
-        <!-- Redirection en cours... -->
-    </body>
-    </html>';
-    exit();
-}*/
 
 /**
  * Fonction qui affiche les infos du l'user loggé.
@@ -249,10 +215,6 @@ function renderUserList($users)
         echo "\n" . "</tr>";
     }
     echo "</table>";
-    /*
-    if ($_SESSION['show_add_form'] === 'false') {
-        renderAddUserButton();
-    }*/
 }
 
 /**
@@ -292,7 +254,6 @@ function renderUpdateUserForm($user)
     echo "\n" . "<label class='me-2' for='password'>Mot de passe</label>";
     echo "\n" . "<input class='input-form px-2' type='password' name='password' id='password' value='' placeholder='Laisser vide si pas de changement'>";
     echo "\n" . "</div>";
-    //echo "\n" . "<input type='hidden' name='id' id='id' value=" . $user[4] . ">";
     echo "\n" . '<input type="hidden" name="id" id="id" value=' . "'$user[4]'" . '>';
     echo "\n" . "<div class='w-100 d-flex justify-content-center'>";
     echo "\n" . "<button class='btn btn-success btn-sm' type='submit' name='action' value='update'>✔ Valider</button>";

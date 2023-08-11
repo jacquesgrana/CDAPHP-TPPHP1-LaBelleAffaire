@@ -4,7 +4,6 @@
   //session_start();
 if (isset($_SESSION['user']) && $_SESSION['user'] === true) {
   renderUser();
-  //echo "\n" . "<button class='brn btn-warning' onclick=''>Déconnexion</button>";
   echo "\n" . "<form class='mt-5 me-5 w-100 d-flex position-fixed justify-content-end' action='index.php?page=accueil&action=logout' method='post'>";
   echo "\n" . "<input class='btn btn-sm btn-warning' type='submit' value='✘ Se Déconnecter'>";
   echo "\n" . "</form>";
@@ -23,8 +22,7 @@ function renderUser() {
     <ul class="list-unstyled d-flex gap-3 justify-content-center">
       <li><a class="link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/index.php?page=accueil">Accueil</a></li>
       <li><a class="link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/index.php?page=apropos">Qui sommes nous ?</a></li>
-      <li><a class="link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/index.php?page=membres">Membres</a></li>
-    
+      <li><a class="link-dark link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/index.php?page=membres">Membres</a></li> 
     </ul>
   </nav>
 </header>
